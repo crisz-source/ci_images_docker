@@ -61,7 +61,7 @@ jobs:
           name: version-log-file
           path: |
             version.txt
-            log_image.txt  
+            logs_image.txt  
 
   # Novo Job para Commit da Versão Atualizada após o Build
   commit_version:
@@ -94,9 +94,9 @@ jobs:
   
       - name: Adicionar e commit do version.txt
         run: |
-            git add version.txt  
+            git add version.txt  logs_image.txt
             git status  
-            git diff --cached  # Verifica as mudanças que foram registradas no índice
+            git diff --cached  
             git commit -m "Atualiza todas as imagens para uma nova versão" || echo "Nada para commitar"  # Faz o commit do arquivo
   
       - name: Sincronizar com a branch main
