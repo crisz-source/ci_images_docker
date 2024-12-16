@@ -81,5 +81,6 @@ jobs:
           git add version.txt
           git diff --cached  # Verifica se há alterações para commit
           git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
+          git fetch origin main
           git pull --rebase origin main
           git push origin HEAD:main  
