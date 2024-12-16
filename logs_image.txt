@@ -1,2 +1,2 @@
-Versão das imagens alterada de 1.7 para 1.7
+Versão das imagens alterada de 1.8 para 1.8
 Logs das imagens geradas com sucesso!
