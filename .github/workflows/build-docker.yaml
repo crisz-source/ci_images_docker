@@ -61,8 +61,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
+          ref: main # usar em casos de push
 
       # - name: Commit versão atualizada | >>> usar em casos de pull request <<<
       #   run: |
@@ -74,13 +73,31 @@ jobs:
       #     git pull origin ${{ github.head_ref || github.ref_name }}  
       #     git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
-      - name: Commit versão atualizada
+      # - name: Commit versão atualizada
+      #   run: |
+      #     git config user.name "${{secrets.GH_USER_NAME}}"
+      #     git config user.email "${{secrets.GH_USER_EMAIL}}"
+      #     git add version.txt
+      #     git diff --cached  # Verifica se há alterações para commit
+      #     git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
+      #     git fetch origin main
+      #     git pull --rebase origin main
+      #     git push origin HEAD:main  
+
+      - name: Configurar Git para commit
         run: |
           git config user.name "${{secrets.GH_USER_NAME}}"
           git config user.email "${{secrets.GH_USER_EMAIL}}"
-          git add version.txt
-          git diff --cached  # Verifica se há alterações para commit
-          git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
-          git fetch origin main
-          git pull --rebase origin main
-          git push origin HEAD:main  
+
+      - name: Adicionar version.txt 
+        run: |
+          git add version.txt  # Adiciona o arquivo version.txt para o commit
+          git status  # Verifica o status para garantir que o arquivo foi adicionado corretamente
+      - name: Commit versão atualizada
+        run: |
+          git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"  # Faz o commit do arquivo
+      - name: Sincronizar com a branch main
+        run: |
+          git fetch origin main  # Garante que a última versão da branch main foi baixada
+          git pull origin main --rebase  # Garante que a branch main está atualizada com o repositório remoto
+          git push origin HEAD:main  # Push das alterações para a branch main
