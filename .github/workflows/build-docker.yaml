@@ -73,7 +73,9 @@
 
 name: Build em imagens docker e adicionado ao github com uma pipeline
 on:
-  pull_request:
+  # pull_request:
+  #   branches: [ "main" ]
+  push:
     branches: [ "main" ]
 
 jobs:
