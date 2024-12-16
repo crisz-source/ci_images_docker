@@ -22,5 +22,5 @@ echo "$NEW_VERSION" > "$VERSION_FILE"
 echo "Versão anterior: $CURRENT_VERSION"
 echo "Nova versão: $NEW_VERSION"
 
-# Salvar um log (opcional)
+# Salvar um log 
 echo "Versão global alterada de $CURRENT_VERSION para $NEW_VERSION" >> change_log.txt
