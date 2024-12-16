@@ -52,23 +52,15 @@ jobs:
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
 
        # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
-      # - name: Gerar logs dos versionamento (bugado)
+      # - name: Gerar logs dos versionamento (bugado) ---
       #   run: |
       #     CURRENT_VERSION=$(cat version.txt)
       #     echo "Versão das imagens alterada de $CURRENT_VERSION para ${VERSION}" > logs_image.txt
       #     echo "Logs das imagens geradas com sucesso! (corrigir está bugado...)" >> logs_image.txt
       #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt 
 
-      # - name: Gerar logs dos versionamento 
-      #   run: |
-      #     # Ler a versão antes do incremento diretamente no arquivo
-      #     OLD_VERSION=$(cat version.txt)
-      #     echo "Versão das imagens alterada de $OLD_VERSION para ${VERSION}" > logs_image.txt
-      #     echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
-      #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
 
-
-      # Persistir o arquivo version.txt para o próximo job
+      # Persistir o arquivo version.txt para o próximo job --- 
       # - name: Persistir version.txt
       #   uses: actions/upload-artifact@v3
       #   with:
@@ -89,11 +81,11 @@ jobs:
           ref: main # usar em casos de push
           fetch-depth: 0  # Garantir que o repositório tenha o histórico completo
 
-       # Baixar o arquivo version.txt do job anterior
-      - name: Baixar version.txt
-        uses: actions/download-artifact@v3
-        with:
-          name: version-log-file  # Baixando os artefato com o nome " version-log-file"
+       # Baixar o arquivo version.txt do job anterior ---
+      # - name: Baixar version.txt
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: version-log-file  # Baixando os artefato com o nome " version-log-file"
 
       - name: Configurar Git para commit
         run: |
