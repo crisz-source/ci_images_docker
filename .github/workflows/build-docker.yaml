@@ -24,13 +24,8 @@ jobs:
         run: |
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      # Gerenciar versionamento automático
-      # - name: Incrementar versão global
-      #   run: |
-      #     chmod +x ./test_increment.sh
-      #     ./test_increment.sh
 
-      - name: Incrementar versão global
+      - name: Incrementar versão das imagens
         run: |
           chmod +x ./test_increment.sh
           ./test_increment.sh
@@ -63,8 +58,10 @@ jobs:
       - name: Persistir version.txt
         uses: actions/upload-artifact@v3
         with:
-          name: version-file
-          path: version.txt  # Salvando o arquivo version.txt como artefato
+          name: version-log-file
+          path: |
+            version.txt
+            log_image.txt  
 
   # Novo Job para Commit da Versão Atualizada após o Build
   commit_version:
@@ -78,33 +75,11 @@ jobs:
           ref: main # usar em casos de push
           fetch-depth: 0  # Garantir que o repositório tenha o histórico completo
 
-      # - name: Commit versão atualizada | >>> usar em casos de pull request <<<
-      #   run: |
-      #     git config user.name "${{secrets.GH_USER_NAME}}"
-      #     git config user.email "${{secrets.GH_USER_EMAIL}}"
-      #     git add version.txt
-      #     git diff --cached  # Verifica se há alterações para commit
-      #     git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
-      #     git pull origin ${{ github.head_ref || github.ref_name }}  
-      #     git push origin HEAD:${{ github.head_ref || github.ref_name }}
-
-      # - name: Commit versão atualizada
-      #   run: |
-      #     git config user.name "${{secrets.GH_USER_NAME}}"
-      #     git config user.email "${{secrets.GH_USER_EMAIL}}"
-      #     git add version.txt
-      #     git diff --cached  # Verifica se há alterações para commit
-      #     git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
-      #     git fetch origin main
-      #     git pull --rebase origin main
-      #     git push origin HEAD:main  
-
-
        # Baixar o arquivo version.txt do job anterior
       - name: Baixar version.txt
         uses: actions/download-artifact@v3
         with:
-          name: version-file  # Baixando o artefato com o nome "version-file"
+          name: version-log-file  # Baixando o artefato com o nome "version-file"
 
       - name: Configurar Git para commit
         run: |
@@ -114,18 +89,18 @@ jobs:
       - name: Verificar mudanças no arquivo version.txt
         run: |
             echo "Antes de adicionar version.txt"
-            git status  # Verifica o status para garantir que o arquivo foi modificado
-            git diff  # Verifica as alterações feitas no arquivo
+            git status  
+            git diff  
   
       - name: Adicionar e commit do version.txt
         run: |
-            git add version.txt  # Adiciona o arquivo version.txt ao staging
-            git status  # Verifica se o arquivo foi realmente adicionado
+            git add version.txt  
+            git status  
             git diff --cached  # Verifica as mudanças que foram registradas no índice
-            git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"  # Faz o commit do arquivo
+            git commit -m "Atualiza todas as imagens para uma nova versão" || echo "Nada para commitar"  # Faz o commit do arquivo
   
       - name: Sincronizar com a branch main
         run: |
-            git fetch origin main  # Garante que a última versão da branch main foi baixada
+            git fetch origin main  
             git pull origin main --rebase  # Garante que a branch main está atualizada com o repositório remoto
             git push origin HEAD:main  # Push das alterações para a branch main
