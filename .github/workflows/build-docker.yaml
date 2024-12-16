@@ -1,77 +1,6 @@
-# name: Build em imagens docker e adicionado ao github com uma pipeline
-# on:
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   publish_images:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout do código
-#         uses: actions/checkout@v4
-#         with:
-#           ref: ${{ github.head_ref || github.ref_name }}
-#           fetch-depth: 0
-
-#       # Login no Docker Hub
-#       - name: Login no Docker Hub
-#         env:
-#           DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-#           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-#         run: |
-#             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-   
-#         # Gerenciar versionamento automático
-#       - name: Incrementar versão global
-#         run: |
-#           chmod +x ./test_increment.sh
-#           ./test_increment.sh
-
-#       # Obter a versão do arquivo version.txt
-#       - name: Definir versão
-#         id: version
-#         run: |
-#           VERSION=$(cat version.txt)
-#           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-#       # Build das imagens com a versão incrementada
-#       - name: Build das imagens
-#         run: |
-#           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }} -f ./api/Dockerfile .
-#           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }} -f ./front-end-nextjs/Dockerfile .
-
-#       # Push das imagens para o Docker Hub
-#       - name: Push para o Docker Hub
-#         env:
-#           DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-#           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-#         run: |
-#             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
-#             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
- 
-
-#       # - name: Commit versão atualizada
-#       #   run: |
-#       #     git config user.name "GitHub Actions"
-#       #     git config user.email "actions@github.com"
-#       #     git add version.txt
-#       #     git commit -m "Atualiza versão para ${{ env.VERSION }}"
-#       #     git pull origin ${{ github.head_ref || github.ref_name }} 
-#       #     git push origin HEAD:${{ github.head_ref || github.ref_name }} 
-
-#       - name: Commit versão atualizada
-#         run: |
-#           git config user.name "${{secrets.GH_USER_NAME}}"
-#           git config user.email "${{secrets.GH_USER_EMAIL}}"
-#           git add version.txt
-#           git commit -m "Atualiza versão para ${{ env.VERSION }}"
-#           git pull origin ${{ github.head_ref || github.ref_name }}  
-#           git push origin HEAD:${{ github.head_ref || github.ref_name }}  
-
-
 name: Build em imagens docker e adicionado ao github com uma pipeline
+
+
 on:
   # pull_request:
   #   branches: [ "main" ]
@@ -135,12 +64,13 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
-      # - name: Commit versão atualizada
+      # - name: Commit versão atualizada | >>> usar em casos de pull request <<<
       #   run: |
       #     git config user.name "${{secrets.GH_USER_NAME}}"
       #     git config user.email "${{secrets.GH_USER_EMAIL}}"
       #     git add version.txt
-      #     git commit -m "Atualiza versão para ${{ env.VERSION }}"
+      #     git diff --cached  # Verifica se há alterações para commit
+      #     git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
       #     git pull origin ${{ github.head_ref || github.ref_name }}  
       #     git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
@@ -152,6 +82,4 @@ jobs:
           git diff --cached  # Verifica se há alterações para commit
           git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
           git pull --rebase origin main
-          git push origin HEAD:main   
-      #git pull origin ${{ github.head_ref || github.ref_name }}
-      #git push origin HEAD:${{ github.head_ref || github.ref_name }}    
+          git push origin HEAD:main  
