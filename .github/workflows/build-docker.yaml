@@ -63,6 +63,7 @@ jobs:
 
       - name: Commit versão atualizada
         run: |
+          gh auth login --with-token < ${{ secrets.GH_TOKEN }}
           git config user.name "${{secrets.GH_USER_NAME}}"
           git config user.email "${{secrets.GH_USER_EMAIL}}"
           git add version.txt
