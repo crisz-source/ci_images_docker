@@ -76,7 +76,7 @@ jobs:
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 
         with:
           ref: main # usar em casos de push
           fetch-depth: 0  # Garantir que o repositório tenha o histórico completo
