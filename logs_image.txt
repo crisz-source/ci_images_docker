@@ -1,2 +1,2 @@
-Versão das imagens alterada de 1.9 para 1.9
+Versão das imagens alterada de 1.10 para 1.10
 Logs das imagens geradas com sucesso!
