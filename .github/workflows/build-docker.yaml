@@ -69,13 +69,13 @@ jobs:
 
 
       # Persistir o arquivo version.txt para o próximo job
-      - name: Persistir version.txt
-        uses: actions/upload-artifact@v3
-        with:
-          name: version-log-file
-          path: |
-            version.txt
-            logs_image.txt  
+      # - name: Persistir version.txt
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: version-log-file
+      #     path: |
+      #       version.txt
+      #       logs_image.txt  
 
   # Novo Job para Commit da Versão Atualizada após o Build
   commit_version:
