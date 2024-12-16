@@ -29,6 +29,11 @@ jobs:
         run: |
           chmod +x ./test_increment.sh
           ./test_increment.sh
+          echo "Antes da execução do script:"
+          cat version.txt  # Verifica o conteúdo antes de executar o script
+          ./test_increment.sh
+          echo "Depois da execução do script:"
+          cat version.txt  # Verifica o conteúdo após executar o script
 
       # Obter a versão do arquivo version.txt
       - name: Definir versão
