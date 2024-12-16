@@ -68,5 +68,5 @@ jobs:
           git config user.email "${{secrets.GH_USER_EMAIL}}"
           git add version.txt
           git commit -m "Atualiza versão para ${{ env.VERSION }}"
-          git pull origin ${{ github.head_ref || github.ref_name }} 
+          git pull origin ${{ github.head_ref || github.ref_name }}  
           git push origin HEAD:${{ github.head_ref || github.ref_name }} 
