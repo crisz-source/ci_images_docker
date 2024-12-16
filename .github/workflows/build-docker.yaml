@@ -151,5 +151,6 @@ jobs:
           git add version.txt
           git diff --cached  # Verifica se há alterações para commit
           git commit -m "Atualiza versão para ${{ env.VERSION }}" || echo "Nada para commitar"
-          git pull origin ${{ github.head_ref || github.ref_name }}  
-          git push origin HEAD:${{ github.head_ref || github.ref_name }}    
+          git pull origin ${{ github.head_ref || github.ref_name }}
+          git push origin HEAD:main   
+      #git push origin HEAD:${{ github.head_ref || github.ref_name }}    
