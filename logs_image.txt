@@ -1,2 +1,2 @@
-Versão das imagens alterada de 1.11 para 1.11
+Versão das imagens alterada de 1.12 para 1.12
 Logs das imagens geradas com sucesso! (vou corrigir em breve, está bugado...)
