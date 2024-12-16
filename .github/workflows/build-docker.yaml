@@ -53,6 +53,13 @@ jobs:
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
 
+       # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
+      - name: Gerar log e persistir arquivos
+        run: |
+          echo "Versão das imagens alterada para ${VERSION}" > logs_image.txt
+          echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
+          cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
+
 
       # Persistir o arquivo version.txt para o próximo job
       - name: Persistir version.txt
@@ -79,7 +86,7 @@ jobs:
       - name: Baixar version.txt
         uses: actions/download-artifact@v3
         with:
-          name: version-log-file  # Baixando o artefato com o nome "version-file"
+          name: version-log-file  # Baixando os artefato com o nome " version-log-file"
 
       - name: Configurar Git para commit
         run: |
@@ -88,11 +95,11 @@ jobs:
   
       - name: Verificar mudanças no arquivo version.txt
         run: |
-            echo "Antes de adicionar version.txt"
+            echo "Antes de adicionar version.txt e logs_image.txt"
             git status  
             git diff  
   
-      - name: Adicionar e commit do version.txt
+      - name: Adicionar e commit dos arquivos version.txt e logs_image.txt
         run: |
             git add version.txt  logs_image.txt
             git status  
