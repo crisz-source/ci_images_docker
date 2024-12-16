@@ -1,6 +1,6 @@
 FROM node:18-alpine AS base
 
-WORKDIR /app
+WORKDIR /usr/app
 
 COPY front-end-nextjs/package.json front-end-nextjs/yarn.lock* front-end-nextjs/package-lock.json* front-end-nextjs/pnpm-lock.yaml* ./
 RUN \
