@@ -53,12 +53,12 @@ jobs:
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
 
-       # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
-      - name: Gerar log e persistir arquivos
-        run: |
-          echo "Versão das imagens alterada para ${VERSION}" > logs_image.txt
-          echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
-          cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
+      #  # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
+      # - name: Gerar log e persistir arquivos
+      #   run: |
+      #     echo "Versão das imagens alterada para ${VERSION}" > logs_image.txt
+      #     echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
+      #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
 
 
       # Persistir o arquivo version.txt para o próximo job
@@ -99,12 +99,12 @@ jobs:
             git status  
             git diff  
   
-      - name: Adicionar e commit dos arquivos version.txt e logs_image.txt
-        run: |
-            git add version.txt  logs_image.txt
-            git status  
-            git diff --cached  
-            git commit -m "Atualiza todas as imagens para uma nova versão" || echo "Nada para commitar"  # Faz o commit do arquivo
+      # - name: Adicionar e commit dos arquivos version.txt e logs_image.txt
+      #   run: |
+      #       git add version.txt  logs_image.txt
+      #       git status  
+      #       git diff --cached  
+      #       git commit -m "Atualiza todas as imagens para uma nova versão" || echo "Nada para commitar"  # Faz o commit do arquivo
   
       - name: Sincronizar com a branch main
         run: |
