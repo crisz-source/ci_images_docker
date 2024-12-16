@@ -1,0 +1,9 @@
+{
+    "name": "meu-projeto-php",
+    "version": "0.1.0",
+    "description": "Projeto PHP com versionamento automático",
+    "main": "index.php",
+    "scripts": {},
+    "author": "Seu Nome",
+    "license": "MIT"
+  }
