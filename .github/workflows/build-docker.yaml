@@ -59,13 +59,13 @@ jobs:
       #     echo "Logs das imagens geradas com sucesso! (corrigir está bugado...)" >> logs_image.txt
       #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt 
 
-      - name: Gerar logs dos versionamento 
-        run: |
-          # Ler a versão antes do incremento diretamente no arquivo
-          OLD_VERSION=$(cat version.txt)
-          echo "Versão das imagens alterada de $OLD_VERSION para ${VERSION}" > logs_image.txt
-          echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
-          cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
+      # - name: Gerar logs dos versionamento 
+      #   run: |
+      #     # Ler a versão antes do incremento diretamente no arquivo
+      #     OLD_VERSION=$(cat version.txt)
+      #     echo "Versão das imagens alterada de $OLD_VERSION para ${VERSION}" > logs_image.txt
+      #     echo "Logs das imagens geradas com sucesso!" >> logs_image.txt
+      #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt
 
 
       # Persistir o arquivo version.txt para o próximo job
