@@ -8,6 +8,10 @@ em Repository secrets, clique em New repository secret.
 
 - Na página Actions secrets / New secret, adicione uma variável DOCKERHUB_USERNAME e em Secrets, adicione o seu usuário do dockerhub. Faça o mesmo com a senha, crie uma variável chamada DOCKERHUB_PASSWORD e em secret, adicione sua senha. 
 
+- É necessário modificar a permissão do seu repositório para ler e escrever: seu repositorio > settings > Actions > General > Workflow permissions > 
+Read and write permissions > Save
+- Com essa modificação de permissão, o github vai conseguir commitar normalmente de volta ao seu repositório
+
 - **(Opcional)** caso queira o versionamento de imagem: Repita o mesmo processo com login e senha do github, com as variaveis GH_USERNAME e GH_PASSWORD
 #
 ## Protegendo a branch main, para que um merge possa ser feito apenas se um pull request e a pipeline sejam concluídos
@@ -39,3 +43,6 @@ git add dxxxx
 git commit -m "xxxx"
 git push origin pull_request
 ```
+- É necessário modificar a permissão do seu repositório para ler e escrever: seu repositorio > settings > Actions > General > Workflow permissions > 
+Read and write permissions > Save
+- Com essa modificação de permissão, o github vai conseguir commitar normalmente de volta ao seu repositório
