@@ -54,8 +54,8 @@ jobs:
       #     DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       #     DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       #   run: |
-      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
-      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
+      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }} usernmae/repositorio:backend-php-prod-1.2
+      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }} ex: usernmae/repositorio:frontend-php-prod-1.2
 
         # Build e push das imagens com a versão incrementada
       - name: Build and push backend image
@@ -64,7 +64,7 @@ jobs:
           context: .  # Caminho para o diretório do backend
           file: ./api/Dockerfile  # Caminho para o Dockerfile do backend
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ github.run_number }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ github.run_number }} # ex: usernmae/repositorio:backend-php-prod-42
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
@@ -72,7 +72,7 @@ jobs:
           context: .  # Caminho para o diretório do frontend
           file: ./front-end-nextjs/Dockerfile  # Caminho para o Dockerfile do frontend
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ github.run_number }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ github.run_number }} # ex: usernmae/repositorio:frontend-angular-prod-42
 
        # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
       # - name: Gerar logs dos versionamento (bugado, vou corrigir em breve) ---
