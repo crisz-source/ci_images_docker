@@ -43,10 +43,6 @@ jobs:
       #     VERSION=$(cat version.txt)
       #     echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Build das imagens com a versão incrementada
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-
       # - name: Build das imagens
       #   run: |
       #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }} -f ./api/Dockerfile .
@@ -61,10 +57,11 @@ jobs:
       #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
       #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
 
+        # Build e push das imagens com a versão incrementada
       - name: Build and push backend image
         uses: docker/build-push-action@v6
         with:
-          context: ./api  # Caminho para o diretório do backend
+          context: .  # Caminho para o diretório do backend
           file: ./api/Dockerfile  # Caminho para o Dockerfile do backend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ github.run_number }}
@@ -72,7 +69,7 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
-          context: ./front-end-nextjs  # Caminho para o diretório do frontend
+          context: .  # Caminho para o diretório do frontend
           file: ./front-end-nextjs/Dockerfile  # Caminho para o Dockerfile do frontend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ github.run_number }}
