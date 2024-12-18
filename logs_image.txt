@@ -1,2 +1,2 @@
-Versão das imagens alterada de 1.13 para 1.13
+Versão das imagens alterada de 1.14 para 1.14
 Logs das imagens geradas com sucesso! (vou corrigir em breve, está bugado...)
