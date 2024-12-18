@@ -46,3 +46,12 @@ git push origin pull_request
 - É necessário modificar a permissão do seu repositório para ler e escrever: seu repositorio > settings > Actions > General > Workflow permissions > 
 Read and write permissions > Save
 - Com essa modificação de permissão, o github vai conseguir commitar normalmente de volta ao seu repositório
+
+# Diferentes formas de build e push
+
+### 1 -
+- no workflow, eu adicionei duas formas de fazer um build e um push para o dockerhub. 
+- Primeiro, faz o build normal com o comando **docker build -t ....** e logo em seguida faz o push com o comando **docker push .....** e o versionamento é feito através de um script que esta no arquivo **test_increment.sh** que gera um arquivo de versionamento e logs. E cada vez que realizar o build, o script é ativado e icrementa 1.x, para o versionamento funcionar corretamente, o script precisa ler o arquivo version.txt para poder atualizar e para que ele possa ler e atualizar, é necessário fazer um commit desse arquivo de dentro do servidor do github para o repositorio, fazendo dessa forma o versionamento vai funcionar corretamente.
+
+### 2 -
+- No workflow, adicionei uma action que já faz isso tudo pra mim, build, push e incrementa o versionamento a cada build que for realizado. 

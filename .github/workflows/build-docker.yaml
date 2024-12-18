@@ -15,98 +15,128 @@ jobs:
 
 
       # Login no Docker Hub
-      - name: Login no Docker Hub
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: |
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      # - name: Login no Docker Hub
+      #   env:
+      #     DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #   run: |
+      #       echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # Logando no docker hub
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
 
-      - name: Incrementar versão das imagens
-        run: |
-          chmod +x ./test_increment.sh
-          ./test_increment.sh
+      # - name: Incrementar versão das imagens
+      #   run: |
+      #     chmod +x ./test_increment.sh
+      #     ./test_increment.sh
           
 
-      # Obter a versão do arquivo version.txt
-      - name: Definir versão
-        id: version
-        run: |
-          VERSION=$(cat version.txt)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      # # Obter a versão do arquivo version.txt
+      # - name: Definir versão
+      #   id: version
+      #   run: |
+      #     VERSION=$(cat version.txt)
+      #     echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       # Build das imagens com a versão incrementada
-      - name: Build das imagens
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }} -f ./api/Dockerfile .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }} -f ./front-end-nextjs/Dockerfile .
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
 
-      # Push das imagens para o Docker Hub
-      - name: Push para o Docker Hub
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: |
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
+      # - name: Build das imagens
+      #   run: |
+      #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }} -f ./api/Dockerfile .
+      #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }} -f ./front-end-nextjs/Dockerfile .
+
+      # # Push das imagens para o Docker Hub
+      # - name: Push para o Docker Hub
+      #   env:
+      #     DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #   run: |
+      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ env.VERSION }}
+      #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api  # Caminho para o diretório do backend
+          file: ./api/Dockerfile  # Caminho para o Dockerfile do backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ github.run_number }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./front-end-nextjs  # Caminho para o diretório do frontend
+          file: ./front-end-nextjs/Dockerfile  # Caminho para o Dockerfile do frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ github.run_number }}
 
        # Criação de log do processo e persistência dos arquivos version.txt e logs_image.txt
-      - name: Gerar logs dos versionamento (bugado, vou corrigir em breve) ---
-        run: |
-          CURRENT_VERSION=$(cat version.txt)
-          echo "Versão das imagens alterada de $CURRENT_VERSION para ${VERSION}" > logs_image.txt
-          echo "Logs das imagens geradas com sucesso! (vou corrigir em breve, está bugado...)" >> logs_image.txt
-          cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt 
+      # - name: Gerar logs dos versionamento (bugado, vou corrigir em breve) ---
+      #   run: |
+      #     CURRENT_VERSION=$(cat version.txt)
+      #     echo "Versão das imagens alterada de $CURRENT_VERSION para ${VERSION}" > logs_image.txt
+      #     echo "Logs das imagens geradas com sucesso! (vou corrigir em breve, está bugado...)" >> logs_image.txt
+      #     cat logs_image.txt  # Exibe o conteúdo do arquivo logs_image.txt 
 
 
       # Persistir o arquivo version.txt para o próximo job --- 
-      - name: Persistir version.txt
-        uses: actions/upload-artifact@v3
-        with:
-          name: version-log-file
-          path: |
-            version.txt
-            logs_image.txt  
+      # - name: Persistir version.txt
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: version-log-file
+      #     path: |
+      #       version.txt
+      #       logs_image.txt  
 
-  # Novo Job para Commit da Versão Atualizada após o Build
-  commit_version:
-    runs-on: ubuntu-latest
-    needs: publish_images  # Este job só vai rodar após a conclusão do job anterior
+  # # Aqui faz o commit para o github para que o versionamento com script funcione corretamente.
+  # commit_version:
+  #   runs-on: ubuntu-latest
+  #   needs: publish_images  # Este job só vai rodar após a conclusão do job anterior
 
-    steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4 
-        with:
-          ref: main # usar em casos de push
-          fetch-depth: 0  # Garantir que o repositório tenha o histórico completo
+  #   steps:
+  #     - name: Checkout do código
+  #       uses: actions/checkout@v4 
+  #       with:
+  #         ref: main # usar em casos de push
+  #         fetch-depth: 0  # Garantir que o repositório tenha o histórico completo
 
-       # Baixar o arquivo version.txt do job anterior ---
-      - name: Baixar version.txt
-        uses: actions/download-artifact@v3
-        with:
-          name: version-log-file  # Baixando os artefato com o nome " version-log-file"
+  #      # Baixar o arquivo version.txt do job anterior ---
+  #     - name: Baixar version.txt
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: version-log-file  # Baixando os artefato com o nome " version-log-file"
 
-      - name: Configurar Git para commit
-        run: |
-            git config user.name "${{secrets.GH_USER_NAME}}"
-            git config user.email "${{secrets.GH_USER_EMAIL}}"
+
+
+  #     # Aqui faz o commit para o github para que o versionamento com script funcione corretamente.
+
+  #     - name: Configurar Git para commit 
+  #       run: |
+  #           git config user.name "${{secrets.GH_USER_NAME}}"
+  #           git config user.email "${{secrets.GH_USER_EMAIL}}"
   
-      - name: Verificar mudanças no arquivo version.txt
-        run: |
-            echo "Antes de adicionar version.txt e logs_image.txt"
-            git status  
-            git diff  
+  #     - name: Verificar mudanças no arquivo version.txt
+  #       run: |
+  #           echo "Antes de adicionar version.txt e logs_image.txt"
+  #           git status  
+  #           git diff  
   
-      - name: Adicionar e commit dos arquivos version.txt e logs_image.txt
-        run: |
-            git add version.txt  logs_image.txt
-            git status  
-            git diff --cached  
-            git commit -m "Atualiza todas as imagens para uma nova versão ${VERSION}" || echo "Nada para commitar"  
+  #     - name: Adicionar e commit dos arquivos version.txt e logs_image.txt
+  #       run: |
+  #           git add version.txt  logs_image.txt
+  #           git status  
+  #           git diff --cached  
+  #           git commit -m "Atualiza todas as imagens para uma nova versão ${VERSION}" || echo "Nada para commitar"  
   
-      - name: Sincronizar com a branch main
-        run: |
-            git fetch origin main  
-            git pull origin main --rebase  # Garante que a branch main está atualizada com o repositório remoto
-            git push origin HEAD:main  # Push das alterações para a branch main
+  #     - name: Sincronizar com a branch main
+  #       run: |
+  #           git fetch origin main  
+  #           git pull origin main --rebase  # Garante que a branch main está atualizada com o repositório remoto
+  #           git push origin HEAD:main  # Push das alterações para a branch main
