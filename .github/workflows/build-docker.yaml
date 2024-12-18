@@ -23,7 +23,7 @@ jobs:
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       # Logando no docker hub, precisa-se de um token, este token é gerado no docker hub e adicionado nas secrets do dockerhub
-      # - name: Login to DockerHub
+      # - name: Login no Docker Hub
       #   uses: docker/login-action@v2
       #   with:
       #     username: ${{ secrets.DOCKER_USERNAME }}
@@ -58,7 +58,7 @@ jobs:
       #       docker push ${{ secrets.DOCKERHUB_USERNAME }}/rancher:frontend-angular-prod-${{ env.VERSION }} ex: usernmae/repositorio:frontend-php-prod-1.2
 
         # Build e push das imagens com a versão incrementada
-      - name: Build and push backend image
+      - name: Build e push da imagem backend
         uses: docker/build-push-action@v6
         with:
           context: .  # Caminho para o diretório do backend
@@ -66,7 +66,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/rancher:backend-php-prod-${{ github.run_number }} # ex: usernmae/repositorio:backend-php-prod-42
 
-      - name: Build and push frontend image
+      - name: Build e push da imagem frontend
         uses: docker/build-push-action@v6
         with:
           context: .  # Caminho para o diretório do frontend
